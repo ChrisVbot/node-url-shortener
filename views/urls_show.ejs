@@ -4,10 +4,12 @@
   <% include partials/_header %>
 </head>
 <body>
-  <ul>
-    <% for (var key in shortURL) { %>
-    <li><%= key %> : <%= shortURL[key]%></li>
-    <% } %>
+    <h2>ShortURL: <%= shortURL %></h2>
+    <form action="/urls/:id" method="POST"">
+    <input id="updatedLongURL" type="text" name="updatedLongURL" value="<%= longURL %>" style="width: 300px;">
+    <input type="hidden" name="shortURL" value="<%= shortURL %>"/>
+    <button type="submit" value="update">Update</button>
+  </form>
   </ul>
 </body>
 </html>
