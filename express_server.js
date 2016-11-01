@@ -46,13 +46,14 @@ app.post("/urls/create", (req, res) => {
 })
 
 app.post("/urls/:id/delete", (req, res) => {
-  delete urlDatabase[req.params.id];
+  console.log(req.params.id)
+  // delete urlDatabase[req.params.id];
   res.redirect(`/urls`);
 })
 
 app.post("/urls/:id", (req, res) => {
   let updatedLongURL = req.body.updatedLongURL;
-  let shortURL = req.body.shortURL.toUpperCase();
+  let shortURL = req.params.id;
   urlDatabase[shortURL] = updatedLongURL;
   res.redirect('/urls');
 
