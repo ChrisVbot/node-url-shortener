@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <% include partials/_header %>
+</head>
+<body>
+  <ul>
+    <% for (var key in shortURL) { %>
+    <li><%= key %> : <%= shortURL[key]%></li>
+    <% } %>
+  </ul>
+</body>
+</html>
