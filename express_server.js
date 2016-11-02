@@ -3,7 +3,9 @@ var app = express();
 
 //will allow us to access POST request params, such as req.body.longURL
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(cookieParser())
 
 app.set("view engine", "ejs");
 
@@ -16,33 +18,37 @@ var urlDatabase = {
 
 app.get("/", (req, res) => {
   res.end("Hello!");
+  console.log(req.cookies)
 })
 
 app.get("/urls", (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = { 
+    username: req.cookies["userName"],
+    urls: urlDatabase 
+  };
   res.render("urls_index", templateVars);
 });
 
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  let templateVars = {
+    username: req.cookies["userName"],
+  }
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:id", (req, res) => {
-  let shortURL = req.params.id;
-  let longURL = urlDatabase[req.params.id.toUpperCase()];
-  res.render("urls_show", {shortURL, longURL});
+  let templateVars = {
+    username: req.cookies["userName"],
+    shortURL: req.params.id,
+    longURL: urlDatabase[req.params.id.toUpperCase()]
+  }
+  res.render("urls_show", templateVars);
 });
 
 app.get("/u/:shortURL", (req, res) => {
   let longURL = urlDatabase[req.params.shortURL]
   res.status(301).redirect(longURL);
-})
-
-app.post("/urls/create", (req, res) => {
-  let shortUrl = generateRandomString();
-  urlDatabase[shortUrl] = req.body.longURL
-  res.redirect(`/urls`)
 })
 
 app.get("/urls/:id/delete", (req, res) => {
@@ -51,12 +57,28 @@ app.get("/urls/:id/delete", (req, res) => {
   res.redirect(`/urls`);
 })
 
+app.post("/login", (req, res) => {
+  res.cookie('userName', req.body.username);
+  res.redirect('/urls');
+})
+
+app.post("/logout", (req, res) => {
+  res.clearCookie('userName');
+  res.redirect('/urls');
+})
+
+app.post("/urls/create", (req, res) => {
+  let shortUrl = generateRandomString();
+  urlDatabase[shortUrl] = req.body.longURL
+  res.redirect(`/urls`)
+})
+
+
 app.post("/urls/:id", (req, res) => {
   let updatedLongURL = req.body.updatedLongURL;
   let shortURL = req.params.id;
   urlDatabase[shortURL] = updatedLongURL;
   res.redirect('/urls');
-
 })
 
 app.listen(PORT, () => {
