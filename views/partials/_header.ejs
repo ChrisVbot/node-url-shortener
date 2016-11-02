@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-  <% if (username) { %>
-    <p>Username: <%= username %></p>
+  <% if (user_id) { %>
+    <p>Username: <%= user_id %></p>
     <form method="POST" action="/logout">
       <button type="submit">Logout</button>
     </form>
   <% } else { %>
-    <form method="POST" action="/login">
-      <input name="username"/>
-      <button type="submit">Submit</button>
-    </form>
+    <a href="/login">Login</a>
+    <a href="/register">Register</a>
   <% } %>
 </body>
 </html>
